@@ -6,7 +6,7 @@ CLOUD_CONFIG_PATH = "./user-data.yml"
 CONFIG= "config.rb"
 
 # Defaults for config options defined in CONFIG
-$num_instances = 1
+$num_instances = 2
 $enable_serial_logging = false
 $vb_gui = false
 $vb_memory = 1024
@@ -23,8 +23,8 @@ if File.exist?(CONFIG)
 end
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "coreos-alpha"
-  config.vm.box_version = ">= 308.0.1"
+  config.vm.box = "coreos-stable"
+  config.vm.box_version = ">= 633.1.0"
   config.vm.box_url = "http://storage.core-os.net/coreos/amd64-usr/alpha/coreos_production_vagrant.json"
 
   # plugin conflict
