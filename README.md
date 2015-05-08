@@ -40,7 +40,7 @@ For example, when you want to start up the whole shebang using auto-discovery.
                     -e DOCKER0_IP=`ifconfig docker0 | grep 'inet ' | awk '{print $2}'` \
                     -v /var/lib/docker/btrfs/subvolumes:/var/lib/docker/btrfs/subvolumes \
                     -v /var/run/docker.sock:/var/run/docker.sock \
-                    tnolet/mesos-on-coreos:1.0
+                    madhatter/mesos-on-coreos:1.0
 
 Notice we are passing in the `PUBLIC_IP` environment variable and dynamically grabbing the docker0 IP. 
 Also, we do not run in bridged mode but use the hosts IP
@@ -55,30 +55,30 @@ When  using ETCD for auto-discovery, you need to first start a master passing in
 will start a master and a zookeeper instance in the same container
 
     ...
-    tnolet/mesos-on-coreos:1.0 master --etcd=false
+    madhatter/mesos-on-coreos:1.0 master --etcd=false
 
 Then start a Marathon container, passing in the zookeeper address for the master. No need to specify the extra etcd flag. 
 
     ...
-    tnolet/mesos-on-coreos:1.0 master marathon --master=zk://172.17.8.101:2181/mesos 
+    madhatter/mesos-on-coreos:1.0 master marathon --master=zk://172.17.8.101:2181/mesos 
 
 Then start a slave container, passing in the zookeeper address for the master. You can boot up as many slaves as you want
 on as many containers. As longs as they are reachable over the network.
 
     ...
-    tnolet/mesos-on-coreos:1.0 master slave --master=zk://172.17.8.101:2181/mesos
+    madhatter/mesos-on-coreos:1.0 master slave --master=zk://172.17.8.101:2181/mesos
 
 
 ## Systemd and Cloud-config
 
 CoreOS uses `systemd` and `cloudconfig` to control running services on startup. You can find examples of the above 
 commands in the a handy `user-data.yml` which you can use with CoreOS to get all this running instantly at boot.
-You can find it in the [https://github.com/tnolet/mesos_on_coreos](https://github.com/tnolet/mesos_on_coreos) repo.
+You can find it in the [https://github.com/madhatter/mesos_on_coreos](https://github.com/madhatter/mesos_on_coreos) repo.
 
 ## AWS and Vagrant
 
-In the [https://github.com/tnolet/mesos_on_coreos](https://github.com/tnolet/mesos_on_coreos) repo you can also find
-a pre-configured Vagrantfile and AWS Cloudformation template ([aws_cfn_template.json](https://github.com/tnolet/mesos_on_coreos/blob/master/aws_cfn_template.json)). Passing in a fresh ETCD discovery URL into either using
+In the [https://github.com/madhatter/mesos_on_coreos](https://github.com/madhatter/mesos_on_coreos) repo you can also find
+a pre-configured Vagrantfile and AWS Cloudformation template ([aws_cfn_template.json](https://github.com/madhatter/mesos_on_coreos/blob/master/aws_cfn_template.json)). Passing in a fresh ETCD discovery URL into either using
 the `user-data.yml` should get you up and running very fast.
 
 ### Vagrant example
@@ -107,11 +107,11 @@ Then do a `vagrant up` and grab some coffee. It will downloaded CoreOS once and 
 If you are fed up with downloading containers when developing, save the container to disk and import it when you are booting 
 your Vagrant boxes. It saves a lot of time when you are destroying your Vagrant boxes a lot.
 
-        $ docker save tnolet/mesos-on-coreos > tnolet_mesos-on-coreos.tar
+        $ docker save madhatter/mesos-on-coreos > madhatter-on-coreos.tar
 
 Just mount your disk to Vagrant and import it using this snippet in your Vagrantfile:
 
-    DOCKER_UBUNTU_MESOS="tnolet_mesos-on-coreos.tar"
+    DOCKER_UBUNTU_MESOS="madhatter-on-coreos.tar"
     
     config.vm.synced_folder ".", "/home/core/share", id: "core", :nfs => true, :mount_options => ['nolock,vers=3,udp']
     config.vm.provision :shell, :inline => "export TMPDISK=/", :privileged => false
